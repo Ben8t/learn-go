@@ -7,24 +7,15 @@ import (
 "log"
 "net/http"
 "os"
-"strings"
 )
 
-type Job struct {
-	Name        string `json:"name"`
-	Status      string `json:"status"`
-	Depedencies []Job  `json:"dependencies"`
-}
 
-func printDependencies(dependencies []Job, counter int) {
-	for _, job := range dependencies {
-		fmt.Println(strings.Repeat("--", counter) + job.Name)
-		printDependencies(job.Depedencies, counter+1)
-}
+type Manufacturer struct {
+	Name string `json:"name"`
 }
 
 func main() {
-	response, err := http.Get("http://cornelius.deez.re/task/bigquery_table_load_data_analytics_aggregated_offer_scraping-20221017/graph?max=3")
+	response, err := http.Get("https://private-anon-28c2bc22c0-carsapi1.apiary-mock.com/manufacturers")
 
 	if err != nil {
 		fmt.Print(err.Error())
@@ -37,10 +28,11 @@ func main() {
 	}
 	// fmt.Println(string(responseData))
 
-	var responseObject Job
-	json.Unmarshal(responseData, &responseObject)
+	var manufacturers []Manufacturer
+	json.Unmarshal(responseData, &manufacturers)
 
-	fmt.Println(responseObject.Name)
-
-	printDependencies(responseObject.Depedencies, 1)
+	fmt.Println(manufacturers)
+	for _, manufacturer := range(manufacturers){
+		fmt.Println(manufacturer.Name)
+	}
 }
